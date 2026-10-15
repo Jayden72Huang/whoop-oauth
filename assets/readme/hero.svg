@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="1200" height="400" viewBox="0 0 1200 400"
+     role="img" aria-labelledby="hero-title hero-desc">
+  <title id="hero-title">whoop-oauth</title>
+  <desc id="hero-desc">Long-term Whoop access for your AI agent. The OAuth handshake: agent authorizes with an offline scope, Whoop returns tokens, and auto-refresh replaces the 1-hour token death.</desc>
+
+  <defs>
+    <marker id="arr-g" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#2FDD7B"/>
+    </marker>
+    <marker id="arr-b" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#5AA9FF"/>
+    </marker>
+    <marker id="arr-m" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#8A94A6"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="400" rx="24" fill="#0B0D10"/>
+
+  <!-- ============ LEFT: identity ============ -->
+  <g id="title-block">
+    <text x="64" y="74" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+          font-size="18" letter-spacing="4" fill="#8A94A6">AI AGENT SKILL &#183; OAUTH2</text>
+    <text x="60" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+          font-size="70" font-weight="800" fill="#F5F7FA">whoop-oauth</text>
+    <text x="64" y="206" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+          font-size="25" fill="#C9D1DC">Long-term Whoop access for your AI agent.</text>
+    <text x="64" y="240" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+          font-size="21" fill="#8A94A6">&#35753; AI Agent &#38271;&#26399;&#35835;&#21462; Whoop &#20581;&#24247;&#25968;&#25454;</text>
+    <!-- pulse motif: health data -->
+    <path d="M64,292 L180,292 L196,276 L212,308 L228,248 L244,292 L360,292 L376,282 L392,292 L560,292"
+          fill="none" stroke="#2FDD7B" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" opacity="0.75"/>
+    <text x="64" y="340" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+          font-size="17" fill="#8A94A6">Muse &#183; GPTs &#183; Claude &#8212; recovery &#183; sleep &#183; workout &#183; energy</text>
+  </g>
+
+  <!-- ============ RIGHT: the OAuth handshake ============ -->
+  <g id="handshake">
+    <rect x="700" y="40" width="436" height="320" rx="20" fill="#0E1218" stroke="#232B36" stroke-width="1.5"/>
+    <text x="730" y="78" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+          font-size="16" letter-spacing="2" fill="#8A94A6">THE OAUTH HANDSHAKE</text>
+
+    <!-- AGENT node -->
+    <rect x="838" y="100" width="160" height="54" rx="12" fill="#131A22" stroke="#2FDD7B" stroke-width="2"/>
+    <text x="918" y="134" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="21" font-weight="700" fill="#F5F7FA">AGENT</text>
+
+    <!-- arrow: authorize -->
+    <line x1="918" y1="154" x2="918" y2="180" stroke="#2FDD7B" stroke-width="2.5" marker-end="url(#arr-g)"/>
+    <text x="932" y="173" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+          font-size="14" fill="#7DEFA8">auth URL + offline</text>
+
+    <!-- WHOOP node -->
+    <rect x="838" y="182" width="160" height="54" rx="12" fill="#131A22" stroke="#5AA9FF" stroke-width="2"/>
+    <text x="918" y="216" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="21" font-weight="700" fill="#F5F7FA">WHOOP</text>
+
+    <!-- arrow: tokens back -->
+    <line x1="918" y1="236" x2="918" y2="262" stroke="#5AA9FF" stroke-width="2.5" marker-end="url(#arr-b)"/>
+    <text x="932" y="255" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+          font-size="14" fill="#9CC8FF">code &#8594; tokens</text>
+
+    <!-- token lifecycle: 1h death -> offline fix -->
+    <rect x="730" y="284" width="138" height="44" rx="22" fill="#1C1214" stroke="#FF6B6B" stroke-width="1.5"/>
+    <text x="799" y="312" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+          font-size="17" fill="#FFB3B3">token &#183; 1h</text>
+    <line x1="868" y1="306" x2="890" y2="306" stroke="#8A94A6" stroke-width="2" marker-end="url(#arr-m)"/>
+    <text x="879" y="292" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+          font-size="13" fill="#8A94A6">dies</text>
+    <rect x="890" y="284" width="62" height="44" rx="22" fill="#1C1214" stroke="#FF6B6B" stroke-width="1.5"/>
+    <text x="921" y="312" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+          font-size="17" fill="#FF6B6B">401</text>
+    <line x1="952" y1="306" x2="974" y2="306" stroke="#2FDD7B" stroke-width="2" marker-end="url(#arr-g)"/>
+    <text x="963" y="292" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+          font-size="13" fill="#7DEFA8">fix</text>
+    <rect x="974" y="284" width="132" height="44" rx="22" fill="#10241A" stroke="#2FDD7B" stroke-width="1.5"/>
+    <text x="1040" y="312" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+          font-size="17" fill="#7DEFA8">+ offline &#8635;</text>
+  </g>
+</svg>

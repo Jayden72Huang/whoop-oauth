@@ -1,38 +1,38 @@
 <p align="center">
-  <img src="./assets/readme/hero.svg" width="100%" alt="whoop-oauth — long-term Whoop access for your AI agent">
+  <img src="./assets/readme/hero.svg" width="100%" alt="whoop-oauth — 让 AI agent 长期连接 Whoop">
 </p>
 
-**English | [简体中文](./README.zh-CN.md)**
+**简体中文 | [English](./README.en.md)**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 ![Battle-tested](https://img.shields.io/badge/Battle--tested-Oct%202026-green)
 
-## What this is
+## 这是什么
 
-A single `SKILL.md` that teaches an AI agent how to connect to Whoop via OAuth2 — and *stay* connected — so the agent can read recovery, sleep, workouts, and energy data long-term. Agent-agnostic: written for Meta Muse, but OpenAI GPTs / Claude builders can substitute their own OAuth flow (Muse-specific parts are marked `[Muse]` in the skill).
+一个 `SKILL.md`，手把手教 AI agent 通过 OAuth2 接入 Whoop——而且接入之后**长期保持在线**，让 agent 能长期读取恢复、睡眠、训练和能量消耗数据。平台中立：按 Meta Muse 的接入方式编写，但 OpenAI GPTs / Claude 的开发者可以换成自己的 OAuth 流程（skill 里 Muse 专属部分标了 `[Muse]`）。
 
-## Battle-tested, not theorized
+## 经过实战检验，而非纸上谈兵
 
-This skill is the distilled record of connecting Whoop **three times in real-world sessions in October 2026**, including two full failure-and-fix cycles:
+这份 skill 是 2026 年 10 月接通 Whoop **三次实战**的完整复盘，包含两次完整的「踩坑—修复」：
 
-- **Attempt #1** died with a 401 — traced to `token_endpoint_auth_method` defaulting to `client_secret_basic`; switching to `client_secret_post` fixed it.
-- **Attempt #2** worked for about an hour, then died — the access token had no refresh token because `offline` wasn't in the scope (the Whoop dashboard has no checkbox for it; it must be hand-added to the auth URL).
-- **Attempt #3** verified the complete fix end-to-end: authorization took ~2 minutes, and auto-refresh was confirmed still working **80+ minutes after issuance**.
+- **第 1 次** 死于 401——查出来是 `token_endpoint_auth_method` 默认用了 `client_secret_basic`，换成 `client_secret_post` 就通了。
+- **第 2 次** 工作了约 1 小时，然后死了——access token 没有 refresh token，因为 scope 里没有 `offline`（Whoop 后台压根没有这个复选框，必须手写进授权 URL）。
+- **第 3 次** 把完整修复链端到端验证了一遍：授权只用了约 2 分钟，**发放 80 分钟以上**后自动续期依然生效。
 
-## Why this exists
+## 为什么要写这个
 
-The official Whoop docs don't explain either of these, and both bite on first contact:
+下面两点官方文档都没讲清楚，但第一次接入的人都会踩：
 
-1. **`token_endpoint_auth_method` must be `client_secret_post`.** The OAuth default, `client_secret_basic`, returns a bare 401 against Whoop's token endpoint. The client secret goes in the POST body, not the `Authorization` header.
-2. **You must hand-add `offline` to the authorization URL's scope.** The Whoop Developer Dashboard has no `offline` checkbox. Without it, the token you get lives ~1 hour and has *no refresh token* — your connection dies silently an hour later.
+1. **`token_endpoint_auth_method` 必须设为 `client_secret_post`。** OAuth 默认的 `client_secret_basic` 打 Whoop 的 token 接口只会返回一个光秃秃的 401。client secret 必须放在 POST 请求体里，而不是 `Authorization` 请求头。
+2. **必须手动把 `offline` 加进授权 URL 的 scope。** Whoop 开发者后台没有 `offline` 这个复选框。不加的话，你拿到的 token 大约 1 小时就过期，而且**没有 refresh token**——一小时后连接静默死亡。
 
-Bonus gotcha worth knowing: Whoop's app form doesn't validate the client secret. A typo won't show up until your token exchange returns 401.
+另外一个值得知道的坑：Whoop 的创建应用表单不会校验 client secret。输错了你也不会立刻发现，直到换 token 时报 401 才暴露。
 
-## Quickstart
+## 快速上手
 
-**1. Create the app.** In the [Whoop Developer Dashboard](https://developer.whoop.com/), create an app and set the redirect URI to your agent's OAuth callback. For Muse: `https://agent.meta.ai/api/hatch/oauth/callback`. You'll need a public privacy-policy page — it's an app requirement.
+**1. 创建应用。** 在 [Whoop 开发者后台](https://developer.whoop.com/) 创建应用，把 redirect URI 设成你 agent 的 OAuth 回调地址。Muse 是 `https://agent.meta.ai/api/hatch/oauth/callback`。还需要一个公开的隐私政策页面——这是 Whoop 应用上架的硬性要求。
 
-**2. Authorize with the exact parameters.** Build the auth URL with your client ID, redirect URI, and all seven scopes — `offline` included:
+**2. 用精确参数拼接授权 URL。** 带上你的 client ID、redirect URI 和全部七个 scope——`offline` 别漏：
 
 ```text
 https://api.prod.whoop.com/oauth/oauth2/auth
@@ -42,9 +42,9 @@ https://api.prod.whoop.com/oauth/oauth2/auth
   &scope=offline+read:recovery+read:cycles+read:sleep+read:workout+read:profile+read:body_measurement
 ```
 
-**3. User authorizes.** This takes ~2 minutes. The user grants access and your callback receives a `code`.
+**3. 用户授权。** 大约 2 分钟。用户点同意后，你的回调地址会收到一个 `code`。
 
-**4. Exchange the code for tokens.** Note: `client_secret` goes in the POST **body** (`client_secret_post`) — not the header:
+**4. 用 code 换 token。** 注意：`client_secret` 放在 POST 请求**体**里（`client_secret_post`）——不是请求头：
 
 ```bash
 curl -X POST https://api.prod.whoop.com/oauth/oauth2/token \
@@ -56,39 +56,39 @@ curl -X POST https://api.prod.whoop.com/oauth/oauth2/token \
   -d "client_secret=YOUR_CLIENT_SECRET"
 ```
 
-**5. Verify auto-refresh.** Wait **70+ minutes**, then call an API endpoint again. If it works without re-authorizing, refresh is alive and your connection is long-term. No webhook is needed for personal use.
+**5. 验证自动续期。** 等 **70 分钟以上**再调一次 API。如果不用重新授权就能通，续期就是活的，连接长期有效。个人使用场景不需要 webhook。
 
-## Troubleshooting
+## 排障
 
-| Symptom | Cause | Fix |
+| 现象 | 原因 | 修法 |
 |---|---|---|
-| 401 on token exchange | Secret in `Authorization` header (`client_secret_basic`) | Move `client_id`/`client_secret` into the POST body |
-| Works, then dies after ~1 hour | `offline` wasn't in the auth URL scope → no refresh token | Re-authorize with `offline` added to `scope` |
-| 401 right after creating the app | Typo in the client secret — the dashboard form never validates it | Re-check the secret, re-register the app if needed |
-| 404 on `/sleep`, `/workout`, or `/recovery` | No data in the queried range | Not an error — the band usually just wasn't worn at night |
+| 换 token 时 401 | secret 放进了 `Authorization` 请求头（`client_secret_basic`） | 把 `client_id`/`client_secret` 改放到 POST 请求体里 |
+| 能用，然后大约 1 小时后死了 | 授权 URL 的 scope 里没有 `offline`，没有 refresh token | 把 `offline` 加进 `scope`，重新走一次授权 |
+| 刚建完应用就 401 | client secret 输错了——后台表单不会校验 | 核对 secret，必要时重新注册应用 |
+| `/sleep`、`/workout`、`/recovery` 返回 404 | 查询的时间段里没数据 | 不是报错——通常只是晚上没戴手环 |
 
-## After you're connected
+## 接通之后
 
-API base: `https://api.prod.whoop.com`
+API 根地址：`https://api.prod.whoop.com`
 
-| Endpoint | What it gives you |
+| 接口 | 拿到什么 |
 |---|---|
-| `/user/profile/basic` | User profile |
-| `/user/body_measurement` | Height, weight, max heart rate |
-| `/cycle` | Physiological days (sleep-to-sleep — may cross calendar days); strain + total energy per cycle |
-| `/recovery` | Recovery score, HRV, resting HR |
-| `/sleep` | Sleep performance, stages, efficiency |
-| `/workout` | Logged activities with strain and energy |
+| `/user/profile/basic` | 用户档案 |
+| `/user/body_measurement` | 身高、体重、最大心率 |
+| `/cycle` | 生理日（睡到睡——可能跨自然日）；每天的 strain 和总能耗 |
+| `/recovery` | 恢复分、HRV、静息心率 |
+| `/sleep` | 睡眠表现、睡眠分期、睡眠效率 |
+| `/workout` | 记录的训练活动，带 strain 和能耗 |
 
-Collection endpoints paginate at **limit 25** with `nextToken`. Empty recovery/sleep/workout collections almost always mean the band wasn't worn at night — treat "no data" as "no data," not an error.
+列表接口每页 **limit 25**，用 `nextToken` 翻页。recovery / sleep / workout 为空，几乎都意味着晚上没戴手环——把"没数据"当成"没数据"，不是报错。
 
-## Limits & notes
+## 限制与说明
 
-- The skill only reads data; it never writes to Whoop or changes user settings.
-- **Never commit client secrets** — the skill routes all credentials through the agent's secure OAuth flow, never through chat or files.
-- Token lifetime is ~1 hour; the skill relies on the `offline` scope's refresh token, not on re-authorization.
-- Muse-specific setup steps are marked `[Muse]` in the skill; other agents substitute their platform's OAuth flow.
+- skill 只读数据，不写 Whoop、不改用户设置。
+- **永远不要提交 client secret**——skill 里所有凭证都走 agent 的安全 OAuth 通道，不会经过聊天记录或文件。
+- token 寿命约 1 小时；skill 依赖 `offline` scope 的 refresh token，而不是反复重新授权。
+- Muse 专属的配置步骤在 skill 里标了 `[Muse]`；其他 agent 换成自己平台的 OAuth 流程即可。
 
-## License
+## 开源协议
 
-[MIT](./LICENSE) — do what you want with it.
+[MIT](./LICENSE)——拿去用，不客气。
